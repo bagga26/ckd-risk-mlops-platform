@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CKD Risk Assessment & Clinical Decision Support</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 24px 16px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    p.subtitle { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+    .section-title {
+      grid-column: 1 / -1;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary);
+      border-bottom: 2px solid #eff6ff;
+      padding-bottom: 6px;
+      margin-top: 14px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+    }
+    .field { display: flex; flex-direction: column; }
+    .field label { font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #334155; }
+    .field input, .field select {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+    .field input:focus, .field select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+    .btn {
+      grid-column: 1 / -1;
+      background: var(--primary);
+      color: #fff;
+      padding: 13px 20px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.2s ease;
+    }
+    .btn:hover { background: var(--primary-dark); }
+    .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    #resultBox { display: none; }
+    .badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .badge-low { background: #dcfce7; color: #15803d; }
+    .badge-mod { background: #fef3c7; color: #b45309; }
+    .badge-elev { background: #fee2e2; color: #b91c1c; }
+    .score { font-size: 42px; font-weight: 800; margin-bottom: 8px; }
+    .note {
+      background: var(--bg);
+      border-left: 4px solid var(--primary);
+      padding: 12px 16px;
+      border-radius: 0 6px 6px 0;
+      font-size: 14px;
+      color: #334155;
+      margin: 16px 0;
+    }
+    .latency { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+    .xai-section { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px; }
+    .xai-section h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+    .xai-bar {
+      display: flex;
+      justify-content: space-between;
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .bar-risk { border-left: 4px solid var(--danger); }
+    .bar-protect { border-left: 4px solid var(--success); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Renal Risk Assessment & Decision Support</h1>
+      <p class="subtitle">Enter patient vitals and laboratory markers to evaluate kidney risk probability.</p>
+
+      <form id="ckdForm" class="grid">
+        <div class="section-title">1. Demographics & Vitals</div>
+        <div class="field"><label>Age (years)</label><input type="number" id="age" value="48" step="any" required></div>
+        <div class="field"><label>Blood Pressure (mm/Hg)</label><input type="number" id="bp" value="80" step="any" required></div>
+        <div class="field"><label>Hypertension</label><select id="htn"><option value="yes" selected>Yes</option><option value="no">No</option></select></div>
+        <div class="field"><label>Diabetes Mellitus</label><select id="dm"><option value="yes" selected>Yes</option><option value="no">No</option></select></div>
+
+        <div class="section-title">2. Urine Chemistry</div>
+        <div class="field"><label>Specific Gravity</label><input type="number" id="sg" value="1.020" step="0.005" required></div>
+        <div class="field"><label>Albumin (0 to 5)</label><input type="number" id="al" value="1" min="0" max="5" required></div>
+        <div class="field"><label>Sugar (0 to 5)</label><input type="number" id="su" value="0" min="0" max="5" required></div>
+        <div class="field"><label>Red Blood Cells</label><select id="rbc"><option value="normal" selected>Normal</option><option value="abnormal">Abnormal</option></select></div>
+        <div class="field"><label>Pus Cells</label><select id="pc"><option value="normal" selected>Normal</option><option value="abnormal">Abnormal</option></select></div>
+        <div class="field"><label>Pus Cell Clumps</label><select id="pcc"><option value="notpresent" selected>Not Present</option><option value="present">Present</option></select></div>
+        <div class="field"><label>Bacteria</label><select id="ba"><option value="notpresent" selected>Not Present</option><option value="present">Present</option></select></div>
+
+        <div class="section-title">3. Blood Chemistry</div>
+        <div class="field"><label>Blood Glucose (mgs/dl)</label><input type="number" id="bgr" value="121" step="any" required></div>
+        <div class="field"><label>Blood Urea (mgs/dl)</label><input type="number" id="bu" value="36" step="any" required></div>
+        <div class="field"><label>Serum Creatinine (mgs/dl)</label><input type="number" id="sc" value="1.2" step="any" required></div>
+        <div class="field"><label>Sodium (mEq/L)</label><input type="number" id="sod" value="135" step="any" required></div>
+        <div class="field"><label>Potassium (mEq/L)</label><input type="number" id="pot" value="4.5" step="any" required></div>
+        <div class="field"><label>Hemoglobin (gms)</label><input type="number" id="hemo" value="15.4" step="any" required></div>
+        <div class="field"><label>Packed Cell Volume</label><input type="number" id="pcv" value="44" step="any" required></div>
+        <div class="field"><label>White Blood Cells</label><input type="number" id="wc" value="7800" step="any" required></div>
+        <div class="field"><label>Red Blood Cells</label><input type="number" id="rc" value="5.2" step="any" required></div>
+
+        <div class="section-title">4. Clinical History & Symptoms</div>
+        <div class="field"><label>Coronary Artery Disease</label><select id="cad"><option value="no" selected>No</option><option value="yes">Yes</option></select></div>
+        <div class="field"><label>Appetite</label><select id="appet"><option value="good" selected>Good</option><option value="poor">Poor</option></select></div>
+        <div class="field"><label>Pedal Edema</label><select id="pe"><option value="no" selected>No</option><option value="yes">Yes</option></select></div>
+        <div class="field"><label>Anemia</label><select id="ane"><option value="no" selected>No</option><option value="yes">Yes</option></select></div>
+
+        <button type="submit" class="btn" id="runBtn">Run Risk Assessment</button>
+      </form>
+    </div>
+
+    <!-- Results Box -->
+    <div class="card" id="resultBox">
+      <div id="riskBadge" class="badge"></div>
+      <div class="score" id="riskScore"></div>
+      <div class="note" id="clinicalGuidance"></div>
+      <div class="latency">Inference Latency: <span id="latencySpan" style="font-weight: 600;"></span></div>
+
+      <div class="xai-section">
+        <h3>Explainable AI (SHAP Biomarker Attributions)</h3>
+        <div id="shapList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('ckdForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('runBtn');
+      btn.innerText = 'Evaluating Biomarkers...';
+      btn.disabled = true;
+
+      const payload = {
+        age: parseFloat(document.getElementById('age').value),
+        bp: parseFloat(document.getElementById('bp').value),
+        sg: parseFloat(document.getElementById('sg').value),
+        al: parseFloat(document.getElementById('al').value),
+        su: parseFloat(document.getElementById('su').value),
+        rbc: document.getElementById('rbc').value,
+        pc: document.getElementById('pc').value,
+        pcc: document.getElementById('pcc').value,
+        ba: document.getElementById('ba').value,
+        bgr: parseFloat(document.getElementById('bgr').value),
+        bu: parseFloat(document.getElementById('bu').value),
+        sc: parseFloat(document.getElementById('sc').value),
+        sod: parseFloat(document.getElementById('sod').value),
+        pot: parseFloat(document.getElementById('pot').value),
+        hemo: parseFloat(document.getElementById('hemo').value),
+        pcv: parseFloat(document.getElementById('pcv').value),
+        wc: parseFloat(document.getElementById('wc').value),
+        rc: parseFloat(document.getElementById('rc').value),
+        htn: document.getElementById('htn').value,
+        dm: document.getElementById('dm').value,
+        cad: document.getElementById('cad').value,
+        appet: document.getElementById('appet').value,
+        pe: document.getElementById('pe').value,
+        ane: document.getElementById('ane').value
+      };
+
+      try {
+        // Send request to our FastAPI endpoint
+        const response = await fetch('/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error('API server returned error');
+        const res = await response.json();
+
+        const box = document.getElementById('resultBox');
+        const badge = document.getElementById('riskBadge');
+        const score = document.getElementById('riskScore');
+        const note = document.getElementById('clinicalGuidance');
+        const latency = document.getElementById('latencySpan');
+        const shapList = document.getElementById('shapList');
+
+        box.style.display = 'block';
+        score.innerText = res.risk_percentage;
+        note.innerText = res.clinical_decision_support;
+        latency.innerText = res.inference_latency_ms + ' ms';
+
+        badge.className = 'badge';
+        if (res.risk_level === 'Low Risk') {
+          badge.classList.add('badge-low');
+          badge.innerText = 'Low Risk Profile';
+          score.style.color = '#15803d';
+        } else if (res.risk_level === 'Moderate Risk') {
+          badge.classList.add('badge-mod');
+          badge.innerText = 'Moderate Risk Profile';
+          score.style.color = '#b45309';
+        } else {
+          badge.classList.add('badge-elev');
+          badge.innerText = 'Elevated Risk Profile';
+          score.style.color = '#b91c1c';
+        }
+
+        shapList.innerHTML = '';
+        for (const [feat, val] of Object.entries(res.top_risk_drivers)) {
+          shapList.innerHTML += `<div class="xai-bar bar-risk"><span><strong>${feat}</strong> (Risk Contributor)</span><span>+${val}</span></div>`;
+        }
+        for (const [feat, val] of Object.entries(res.top_protective_factors)) {
+          shapList.innerHTML += `<div class="xai-bar bar-protect"><span><strong>${feat}</strong> (Protective Factor)</span><span>${val}</span></div>`;
+        }
+
+        box.scrollIntoView({ behavior: 'smooth' });
+      } catch (err) {
+        alert('Inference error. Please check your FastAPI console.');
+      } finally {
+        btn.innerText = 'Run Risk Assessment';
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
