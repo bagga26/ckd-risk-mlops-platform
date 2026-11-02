@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Model Insights & Global Explainability</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+    .nav { background: #fff; border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
+    .nav-brand { font-weight: 700; color: var(--primary); text-decoration: none; font-size: 18px; }
+    .nav-links a { margin-left: 20px; text-decoration: none; color: #475569; font-size: 14px; font-weight: 500; }
+    .nav-links a.active { color: var(--primary); font-weight: 700; }
+    .container { max-width: 960px; margin: 30px auto; padding: 0 16px; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    p.sub { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+    .biomarker-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+    .biomarker-table th, .biomarker-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .biomarker-table th { background: #f1f5f9; color: #334155; }
+    .rank-badge { background: #e0e7ff; color: #3730a3; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="/" class="nav-brand">CKD Decision Support</a>
+    <div class="nav-links">
+      <a href="/">Assessment</a>
+      <a href="/insights" class="active">Model Insights</a>
+      <a href="/audit">MLOps Audit</a>
+      <a href="/about">Protocol & Specs</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="card">
+      <h1>Global Explainability & Feature Hierarchy</h1>
+      <p class="sub">Trained on the UCI CKD benchmark dataset using Random Forest with TreeSHAP attribution.</p>
+      
+      <table class="biomarker-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Biomarker / Feature</th>
+            <th>Clinical Significance</th>
+            <th>Global SHAP Influence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="rank-badge">#1</span></td>
+            <td><strong>Serum Creatinine (sc)</strong></td>
+            <td>Primary indicator of glomerular filtration rate (GFR). Elevated levels signal declining renal clearance.</td>
+            <td>Primary Risk Driver</td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge">#2</span></td>
+            <td><strong>Hemoglobin (hemo)</strong></td>
+            <td>Decreased levels indicate anemia caused by diminished renal erythropoietin secretion.</td>
+            <td>Strong Protective Factor (when normal)</td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge">#3</span></td>
+            <td><strong>Specific Gravity (sg)</strong></td>
+            <td>Assesses renal tubular ability to concentrate urine. Low fixed gravity implies tubular injury.</td>
+            <td>High Discriminative Power</td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge">#4</span></td>
+            <td><strong>Albumin (al)</strong></td>
+            <td>Persistent micro/macroalbuminuria reflects breakdown of glomerular filtration barrier.</td>
+            <td>Direct Risk Driver</td>
+          </tr>
+          <tr>
+            <td><span class="rank-badge">#5</span></td>
+            <td><strong>Blood Glucose Random (bgr)</strong></td>
+            <td>Screens for diabetic nephropathy, one of the leading underlying etiologies for CKD.</td>
+            <td>Moderate Risk Driver</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h1>Model Performance & Architecture</h1>
+      <p class="sub">Cross-validation benchmarks on held-out test splits.</p>
+      <div style="display: flex; gap: 20px; text-align: center;">
+        <div style="flex: 1; background: #f8fafc; padding: 18px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 28px; font-weight: 800; color: #16a34a;">100%</div>
+          <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">ROC-AUC Score</div>
+        </div>
+        <div style="flex: 1; background: #f8fafc; padding: 18px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 28px; font-weight: 800; color: #2563eb;">100 Trees</div>
+          <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">Random Forest Ensemble</div>
+        </div>
+        <div style="flex: 1; background: #f8fafc; padding: 18px; border-radius: 8px; border: 1px solid var(--border);">
+          <div style="font-size: 28px; font-weight: 800; color: #d97706;">Median + OHE</div>
+          <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">Leak-Free Imputation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

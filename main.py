@@ -78,12 +78,39 @@ class PatientData(BaseModel):
 # 4. API Endpoints
 # ---------------------------------------------------------
 @app.get("/", response_class=HTMLResponse)
-def serve_frontend():
-    html_path = os.path.join(os.path.dirname(__file__), "templates", "index.html")
-    if os.path.exists(html_path):
-        with open(html_path, "r", encoding="utf-8") as f:
-            return f.read()
-    return "<h3>Error: templates/index.html not found.</h3>"
+def serve_home():
+    with open(os.path.join("templates", "index.html"), "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/insights", response_class=HTMLResponse)
+def serve_insights():
+    with open(os.path.join("templates", "insights.html"), "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/audit", response_class=HTMLResponse)
+def serve_audit():
+    with open(os.path.join("templates", "audit.html"), "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/about", response_class=HTMLResponse)
+def serve_about():
+    with open(os.path.join("templates", "about.html"), "r", encoding="utf-8") as f:
+        return f.read()
+
+@app.get("/api/audit-logs")
+def get_audit_logs():
+    records = []
+    log_path = os.path.join(LOG_DIR, "inference_audit.log")
+    if os.path.exists(log_path):
+        with open(log_path, "r", encoding="utf-8") as f:
+            for line in f:
+                if "AUDIT_RECORD:" in line:
+                    try:
+                        raw_json = line.split("AUDIT_RECORD:")[1].strip()
+                        records.append(json.loads(raw_json))
+                    except Exception:
+                        continue
+    return records[-30:]
 
 @app.get("/health")
 def health_check():
