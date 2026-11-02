@@ -1,0 +1,33 @@
+name: CKD MLOps CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+
+    - name: Set up Python runtime
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Verify pipeline artifact integrity
+      run: |
+        python -c "import joblib; p = joblib.load('ckd_pipeline.joblib'); print('Pipeline loaded successfully.')"
+
+    - name: Run inference test
+      run: |
+        python predict.py
