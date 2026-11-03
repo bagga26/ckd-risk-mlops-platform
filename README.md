@@ -1,3 +1,4 @@
+[![CKD MLOps CI Pipeline](https://github.com/bagga26/ckd-risk-mlops-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/bagga26/ckd-risk-mlops-platform/actions/workflows/ci.yml)
 # Explainable AI & MLOps Healthcare Platform: CKD Risk Assessment
 
 An end-to-end Machine Learning Operations (MLOps) platform providing non-diagnostic clinical risk stratification and explainability for Chronic Kidney Disease (CKD) using the gold-standard UCI benchmark dataset.
