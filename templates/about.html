@@ -1,58 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Clinical Protocol & System Architecture</title>
-  <style>
-    :root {
-      --primary: #2563eb;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --border: #e2e8f0;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
-    .nav { background: #fff; border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; justify-content: space-between; align-items: center; }
-    .nav-brand { font-weight: 700; color: var(--primary); text-decoration: none; font-size: 18px; }
-    .nav-links a { margin-left: 20px; text-decoration: none; color: #475569; font-size: 14px; font-weight: 500; }
-    .nav-links a.active { color: var(--primary); font-weight: 700; }
-    .container { max-width: 960px; margin: 30px auto; padding: 0 16px; }
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-    h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
-    p { font-size: 14px; line-height: 1.6; color: #334155; margin-bottom: 14px; }
-    .notice { background: #fef2f2; border-left: 4px solid #dc2626; padding: 14px; border-radius: 0 6px 6px 0; font-size: 13px; color: #991b1b; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Clinical Protocol | NephroAI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0a0f1d; color: #f8fafc; margin: 0; }
+        .top-navbar { background: rgba(10, 15, 29, 0.85); padding: 1rem 2rem; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 1.5rem; font-weight: 500; }
+        .nav-links a:hover, .nav-links a.active { color: #f8fafc; }
+        .brand-title { font-weight: 800; font-size: 1.25rem; background: linear-gradient(135deg, #ffffff 40%, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .page-container { max-width: 1000px; margin: 4rem auto; padding: 2rem; background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; }
+        h1 { color: #f59e0b; }
+    </style>
 </head>
 <body>
-  <div class="nav">
-    <a href="/" class="nav-brand">CKD Decision Support</a>
-    <div class="nav-links">
-      <a href="/">Assessment</a>
-      <a href="/insights">Model Insights</a>
-      <a href="/audit">MLOps Audit</a>
-      <a href="/about" class="active">Protocol & Specs</a>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="card">
-      <h1>Clinical Protocol & Design Principles</h1>
-      <p>This platform serves as a non-diagnostic Clinical Decision Support System (CDSS) developed to address delayed detection of Chronic Kidney Disease (CKD) in primary care environments.</p>
-      
-      <p>By leveraging TreeSHAP (SHapley Additive exPlanations), the model provides local biomarker attributions for every individual inference, eliminating "black-box" predictions and allowing clinicians to assess which lab parameters contributed most to the risk profile.</p>
-
-      <div class="notice">
-        <strong>Strict Regulatory & Medical Boundary:</strong> This system does not diagnose pathology or prescribe medical intervention. Risk probabilities and tiered classifications are intended strictly for clinical prioritization and triaging. Final diagnostic determination requires clinical validation by a licensed medical practitioner.
-      </div>
-    </div>
-
-    <div class="card">
-      <h1>Dataset Provenance & Technical Stack</h1>
-      <p><strong>Benchmark Dataset:</strong> University of California Irvine (UCI) Machine Learning Repository — Chronic Kidney Disease Dataset (400 cases, 24 clinical features).</p>
-      <p><strong>Technology Architecture:</strong> Scikit-Learn (Pipelines, Imputation, Random Forest), SHAP (TreeExplainer), FastAPI (Asynchronous REST API, Pydantic Boundary Validation), Docker (Multi-stage Containerization), and Native JavaScript/HTML5 UI.</p>
-    </div>
-  </div>
+    <header class="top-navbar">
+        <div class="brand-title">NephroAI</div>
+        <nav class="nav-links">
+            <a href="/">Diagnostic Assessment</a>
+            <a href="/insights">Model Insights</a>
+            <a href="/audit">MLOps Audit</a>
+            <a href="/about" class="active">Clinical Protocol & Project Info</a>
+        </nav>
+    </header>
+    <main class="page-container">
+        <h1>📋 Clinical Protocol & Developer Information</h1>
+        <p>This Clinical Decision Support System is designed for the stratification and early detection of Chronic Kidney Disease (CKD) using 24 critical clinical parameters, including blood chemistry and urinalysis.</p>
+        
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 2rem 0;">
+        
+        <h3>Project Development</h3>
+        <ul style="line-height: 1.8;">
+            <li><strong>Developer:</strong> Avtar Singh (UID: 24BCS12264)</li>
+            <li><strong>Institution:</strong> Chandigarh University (B.Tech CSE)</li>
+            <li><strong>Project Scope:</strong> Full-Stack MLOps, CI/CD Cloud Deployment, and Explainable AI (XAI) Integration.</li>
+        </ul>
+        <p style="margin-top: 2rem; color: #94a3b8; font-size: 0.9rem;">
+            <em>Disclaimer: This tool is for academic and demonstration purposes. It does not replace professional medical diagnosis.</em>
+        </p>
+    </main>
 </body>
 </html>
